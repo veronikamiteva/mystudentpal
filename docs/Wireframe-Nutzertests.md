@@ -65,20 +65,4 @@
 
 ###  Auswertung des Nutzertests
 
-| **Was war gut?**                                                                 | **Was war schlecht?**                                                           |
-|----------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| - Die Benutzeroberfläche war intuitiv und leicht verständlich.                  | - Der Text war auf kleineren Bildschirmen zu klein oder schwer lesbar.          |
-| - Die Nutzer konnten Aufgaben ohne grosse Hilfe erledigen.                       |                                                                                  |
-| - Das Layout und der Navigationsfluss wirkten natürlich.                        |                                                                                  |
-| - Positives Feedback zur visuellen Hierarchie und Struktur.                     |                                                                        |
-
-| **Neue Ideen?**                                                                  | **Neue Probleme?**                                                                                 |
-|----------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| - Fächer-Farbcodes im Kalender                                                | - Wie viele Notizen und Aufgaben kann ich sehen, bevor es unübersichtlich wird?                                                                             |
-| - Erinnerung für Deadlines                                    | - Keine mobile Ansicht oder responsive Anpassung erkennbar                |
-| - Integration mit Stundenplan oder Kursstruktur                                |                                                                                  |
-| - Dunkelmodus als Option in Betracht ziehen                                 |                                                                                  |
-
-
-
-
+![UserTest](../assets/User-Test.png)
