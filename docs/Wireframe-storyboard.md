@@ -1,1 +1,1 @@
-![Storyboard](../assets/MyStudentPal-Wireframe.jpg)
+![Storyboard](../assets/MyStudentPal-Wireframe.png)
