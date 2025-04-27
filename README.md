@@ -13,3 +13,5 @@ Phi Phi Cung - cungphi1@students.zhaw.ch
 Pomellitto Melanie - pomelmel@students.zhaw.ch
 
 *Diese App wurde im Rahmen der Moduls 'BMLD Informatik 2' an der ZHAW entwickelt.*
+
+MyStudentPal App URL - https://mystudentpal.streamlit.app/
