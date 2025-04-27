@@ -1,57 +1,58 @@
 ### MyStudentPal – Produkt-Roadmap
 
 #### Version 1.0 (MVP)
-*Ziel: Bereitstellung zentraler Funktionen für die akademische Planung von Studierenden*
+*Ziel: Aufbau einer zentralen Plattform, die Studierenden ermöglicht, sich zu registrieren, Modulen anzulegen und ihre Noten zu berechnen.*
 
-- Benutzeranmeldung und -registrierung
+- Benutzeranmeldung und -registrierung (neue Funktion)
 
-- Dashboard mit berechneter Durchschnittsnote und Anzahl der Aufgaben
+- Notenrechner mit Eingabe gewichteter Bewertungen (neue Funktion)
 
-- Aufgaben-Deadline-Tracker (Kalenderansicht)
+- Neue Modulen hinzufügen (neue Funktion)
 
-- Neue Aufgabe hinzufügen
+- Globale Einstellungen hinzufügen, in denen die Bewertungsmethode festgelegt werden kann (neue Funktion)
 
-- Notenrechner mit Eingabe gewichteter Bewertungen
+- Daten-Eingabeoberfläche – zentrale Eingabefelder für:
 
-**Fokus**: *Bereitstellung grundlegender Planungs- und Übersichtsfunktionen in einer intuitiven Benutzeroberfläche.*
+    - Modulen ("Modul", "ECTS", "Semester")
+
+    - Einstellungen ("Einstellung", "Wert")
+
+    - Bewertungen ("Modul", "Bewertung", "Gewichtung", "Note", "Zeitstempel")
+
+- Neues Modul hinzufügen (neue Funktion)
+
+- Neue Bewertung hinzufügen (neue Funktion)
+
+- Logout-Button (neue Funktion)
+
+- Bereitstellung auf Streamlit
+
+**Fokus**: *Implementierung der Kernfunktionen – Benutzerverwaltung, Modulverwaltung, globale Bewertungs­konfiguration, intuitive Dateneingabe und sofortiger Streamlit-Launch.*
 
 #### Version 2.0
-*Ziel: Verbesserung der Benutzerfreundlichkeit und Personalisierung*
+*Ziel: Verbesserung der Benutzerfreundlichkeit und Personalisierung durch integriertes Aufgabenmanagement und optimierte Dateneingabe.*
 
-- Farbcodierung nach Fächern im Kalender hinzufügen (Neue Funktion)
+- Aufgaben-Deadline-Tracker (Kalenderansicht) (neue Funktion)
 
-- Logout-Button und persönliche Begrüssung hinzufügen
+- Neue Aufgabe hinzufügen (neue Funktion)
 
-- App mobil-responsive gestalten (Neue Funktion)
+- Daten-Eingabeoberfläche – zentrale Eingabefelder für:
 
-- Tooltips/Hilfetexte für Erstbenutzer (Neue Funktion)
+    -Aufgaben (Aufgabentitel, Erstellungsdatum, Fälligkeitsdatum, Erinnerung aktiviert/Erinnerungszeitpunkt, Beschreibung (optional))
 
-- Dunkelmodus-Umschalter (Neue Funktion)
+- Tooltips/Hilfetexte für Erstbenutzer (neue Funktion)
 
-*Verbessert die Benutzerführung und Zugänglichkeit auf verschiedenen Geräten.*
+**Fokus**: *Ausbau der Kernfunktionen um Deadline-Tracking, zentrale Eingabemasken und gezielte Hilfestellungen für neue Nutzer.*
 
 #### Version 3.0
-*Ziel: Intelligente Funktionen hinzufügen und Automatisierung erhöhen*
+*Ziel: Verbesserung der Stabilität, Wartbarkeit und Nutzererfahrung der App durch gezielte Verfeinerungen und Infrastrukturverbesserungen.*
 
-- Erinnerungen für Deadlines / Push-Benachrichtigungen (Neue Funktion)
+- Designverbesserungen und UI-Korrekturen zur Steigerung von Ästhetik und Usability
 
-- Automatische Durchschnittsnotenberechnung über die Zeit
+- Fehlerbehebungen in allen Kernmodulen für einen reibungslosen, fehlerfreien Ablauf
 
-- Dauerhafte Datenspeicherung (lokal oder in der Cloud)
+- Optimierungen im Code und in der Architektur zur Leistungssteigerung und Vereinfachung zukünftiger Entwicklungen
 
-- Notenvorhersage-Tool (z. B. benötigte Punktzahl zum Bestehen) (Neue Funktion)
+- Dauerhafte Datenspeicherung (lokal oder in der Cloud) für zuverlässiges Speichern von Nutzerdaten zwischen den Sitzungen
 
-*Macht die App intelligenter und nützlicher für langfristige Studienplanung.*
-
-#### Version 4.0
-*Ziel: Erweiterung des Ökosystems und der Anpassungsmöglichkeiten*
-
-- Synchronisierung mit Stundenplan oder externem Kalender (Neue Funktion)
-
-- To-Do-Modul mit Kategorien und Prioritäten (Neue Funktion)
-
-- Export von Noten oder Deadlines (PDF / Excel) (Neue Funktion)
-
-- Mehrsprachige Unterstützung (Neue Funktion)
-
-*Erweitert den Nutzen der App über Einzelfunktionen hinaus zu einer vollständigen Integration in das akademische Leben.*
+**Fokus**: *Überarbeitung des Designs, Behebung von Bugs, Optimierung des Codebases und Aufbau einer zuverlässigen Datenpersistenz.*
