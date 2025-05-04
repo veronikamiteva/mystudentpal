@@ -14,7 +14,7 @@ from utils.login_manager import LoginManager
 data_manager = DataManager(fs_protocol="webdav", fs_root_folder="MyStudentPal_DB")
 login_manager = LoginManager(data_manager)
 login_manager.login_register()
-# ====== End Login B`slock ======
+# ====== End Login Block ======
 
 # --- Remove padding and spacing ---
 st.markdown("""
@@ -29,9 +29,7 @@ st.markdown("""
     }
     .tooltip {
         position: relative;
-        display: inline-block;
         cursor: default;
-        width: 100%;
     }
     .tooltip .tooltiptext {
         visibility: hidden;
@@ -53,9 +51,6 @@ st.markdown("""
     .tooltip:hover .tooltiptext {
         visibility: visible;
         opacity: 1;
-    }
-    .stSelectbox, .stNumberInput, h1, h3 {
-        margin: 0 55px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -101,19 +96,10 @@ def add_task_dialog():
                 st.error("Bitte gib einen Aufgabentitel ein.")
 
 # --- Main Interface ---
-st.title("🗓 Assignment Deadline Tracker")
+st.title("📅 Assignment Deadline Tracker")
 
-
-# Approximate 55px as a fraction of total width
-margin_px = 55
-total_width_px = 1000  # estimate screen width
-left_ratio = margin_px / total_width_px
-cols = st.columns([left_ratio, 1 - left_ratio])
-
-with cols[1]:
-    if st.button("➕ Neue Aufgabe"):
-        add_task_dialog()
-
+if st.button("➕ Neue Aufgabe"):
+    add_task_dialog()
 
 # Select month/year
 today = date.today()
@@ -144,18 +130,10 @@ for week in month_calendar:
                 day_date = date(selected_year, month_number, day)
                 day_tasks = aufgaben_df[aufgaben_df['Fälligkeitsdatum'] == day_date]
 
-                task_rows = ""
-                for _, task in day_tasks.iterrows():
+                task_buttons_html = ""
+                for i, task in day_tasks.iterrows():
                     tooltip_text = task['Beschreibung'] or "Keine Beschreibung"
-                    task_rows += f"""
-                        <div class='tooltip' style='font-size: 0.75em; margin-top: 4px;'>
-                            📝 {task['Titel']}
-                            <span class='tooltiptext'>
-                                <strong>Fälligkeit:</strong> {task['Fälligkeitsdatum'].strftime('%d.%m.%Y')}<br>
-                                <strong>Beschreibung:</strong> {tooltip_text}
-                            </span>
-                        </div>
-                    """
+                    task_buttons_html += f"<div class='tooltip' style='font-size: 0.75em; margin-top: 4px;'>📝 {task['Titel']}<span class='tooltiptext'><strong>Fälligkeit:</strong> {task['Fälligkeitsdatum'].strftime('%d.%m.%Y')}<br><strong>Beschreibung:</strong> {tooltip_text}</span></div>"
 
                 st.markdown(f"""
                     <div style="
@@ -170,10 +148,11 @@ for week in month_calendar:
                         position: relative;
                     ">
                         <div style="text-align: right; font-weight: bold;">{day}</div>
-                        <div style="text-align: left;">{task_rows}</div>
+                        <div style="text-align: left;">{task_buttons_html}</div>
                     </div>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
                     <div style='border: 1px solid transparent; padding: 6px; min-height: 120px;'></div>
                 """, unsafe_allow_html=True)
+
