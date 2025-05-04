@@ -96,7 +96,7 @@ def add_task_dialog():
                 st.error("Bitte gib einen Aufgabentitel ein.")
 
 # --- Main Interface ---
-st.title("📅 Assignment Deadline Tracker")
+st.title("📅 Fristentracker")
 
 if st.button("➕ Neue Aufgabe"):
     add_task_dialog()
