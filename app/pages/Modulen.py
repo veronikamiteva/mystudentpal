@@ -19,7 +19,7 @@ from utils import helpers  # you can remove if no longer needed
 from pathlib import Path
 
 # Build absolute path reliably
-logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png"
+logo_path = Path(__file__).resolve().parents[2] / "assets" / "logo-msp.png"
 
 with open(logo_path, "rb") as image_file:
     encoded = base64.b64encode(image_file.read()).decode()
