@@ -1,31 +1,24 @@
 import streamlit as st
 import pandas as pd
 import calendar
+import base64
+from streamlit_theme import st_theme
 from datetime import datetime, date, timedelta
 
-# ====== Set FULL PAGE before any Streamlit commands ======
-st.set_page_config(layout="wide")
 
-# ====== Start Login Block ======
-from utils.data_manager import DataManager
-from utils.login_manager import LoginManager
 
-# Initialize managers
-data_manager = DataManager(fs_protocol="webdav", fs_root_folder="MyStudentPal_DB")
-login_manager = LoginManager(data_manager)
-login_manager.login_register()
-# ====== End Login Block ======
-
-# --- Remove padding and spacing ---
-st.markdown("""
+# --- Style only calendar area (not selectboxes/titles) ---
+st.html("""
     <style>
     .block-container {
-        padding-top: 1rem;
         padding-left: 0rem;
         padding-right: 0rem;
     }
     div[data-testid="stHorizontalBlock"] {
         gap: 0rem !important;
+    }
+    .st-emotion {
+        gap: 0 !important;
     }
     .tooltip {
         position: relative;
@@ -53,7 +46,30 @@ st.markdown("""
         opacity: 1;
     }
     </style>
-""", unsafe_allow_html=True)
+""")
+# ====== Start Login Block ======
+from utils.data_manager import DataManager
+from utils.login_manager import LoginManager
+
+# Initialize managers
+data_manager = DataManager(fs_protocol="webdav", fs_root_folder="MyStudentPal_DB")
+login_manager = LoginManager(data_manager)
+login_manager.login_register()
+# ====== End Login Block ======
+
+# Load your image and encode it as base64
+with open("../assets/logo-msp.png", "rb") as image_file:
+    encoded = base64.b64encode(image_file.read()).decode()
+
+# Create the HTML for the image
+logo_html = f"""
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{encoded}" width="150">
+    </div>
+"""
+
+# Display the logo in the sidebar
+st.sidebar.markdown(logo_html, unsafe_allow_html=True)
 
 # --- Load or initialize Tasks ---
 tasks_schema = ["Titel", "Fälligkeitsdatum", "Beschreibung"]
@@ -70,6 +86,20 @@ aufgaben_df = st.session_state["aufgaben_df"]
 if not aufgaben_df.empty:
     aufgaben_df['Fälligkeitsdatum'] = pd.to_datetime(aufgaben_df['Fälligkeitsdatum']).dt.date
 
+theme = st_theme() # or your st_theme() function
+
+# Provide a fallback if theme is None
+if theme and theme['base'] == "dark":
+    bg = "#1e1e1e"
+    text = "white"
+elif theme and theme['base'] == "light":
+    bg = "#f5f5f5"
+    text = "black"
+else:
+    # Fallback if theme is not yet available
+    bg = "#e0e0e0"  # Light gray
+    text = "#202020"  # Very dark gray
+
 # --- Add Assignment Dialog ---
 @st.dialog("➕ Neue Aufgabe hinzufügen")
 def add_task_dialog():
@@ -79,7 +109,6 @@ def add_task_dialog():
         due_date = st.date_input("Fälligkeitsdatum", min_value=date.today())
         description = st.text_area("Beschreibung (optional)")
         save_task = st.form_submit_button("Aufgabe speichern")
-
         if save_task:
             if title:
                 data_manager.append_record(
@@ -98,8 +127,17 @@ def add_task_dialog():
 # --- Main Interface ---
 st.title("📅 Fristentracker")
 
-if st.button("➕ Neue Aufgabe"):
-    add_task_dialog()
+st.divider()
+
+# Form inside box
+with st.form("add"):
+    # Layout inside the box
+    col1, col2 = st.columns([4, 1])
+    with col1:
+        st.markdown(f'<p style="color: {text}; font-size: 16px; margin-top: 8px;">Neue Aufgabe hinzufügen</p>', unsafe_allow_html=True)
+    with col2:
+        if st.form_submit_button("➕ Neue Aufgabe"):
+            add_task_dialog()
 
 # Select month/year
 today = date.today()
@@ -117,7 +155,7 @@ day_labels = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 cols = st.columns(7)
 for idx, day_label in enumerate(day_labels):
     with cols[idx]:
-        st.markdown(f"<div style='text-align: center; font-weight: bold;'>{day_label}</div>", unsafe_allow_html=True)
+        st.html(f"<div style='text-align: center; font-weight: bold; color: {text};'>{day_label}</div>")
 
 st.markdown("---")
 
@@ -133,7 +171,15 @@ for week in month_calendar:
                 task_buttons_html = ""
                 for i, task in day_tasks.iterrows():
                     tooltip_text = task['Beschreibung'] or "Keine Beschreibung"
-                    task_buttons_html += f"<div class='tooltip' style='font-size: 0.75em; margin-top: 4px;'>📝 {task['Titel']}<span class='tooltiptext'><strong>Fälligkeit:</strong> {task['Fälligkeitsdatum'].strftime('%d.%m.%Y')}<br><strong>Beschreibung:</strong> {tooltip_text}</span></div>"
+                    task_buttons_html += f"""
+                        <div class='tooltip' style='font-size: 0.75em; margin-top: 4px;'>
+                            📝 {task['Titel']}
+                            <span class='tooltiptext'>
+                                <strong>Fälligkeit:</strong> {task['Fälligkeitsdatum'].strftime('%d.%m.%Y')}<br>
+                                <strong>Beschreibung:</strong> {tooltip_text}
+                            </span>
+                        </div>
+                    """
 
                 st.markdown(f"""
                     <div style="
@@ -141,18 +187,20 @@ for week in month_calendar:
                         border-radius: 0px;
                         padding: 6px;
                         min-height: 120px;
-                        background-color: #1e1e1e;
+                        background-color: {bg};
                         display: flex;
                         flex-direction: column;
                         justify-content: flex-start;
                         position: relative;
+                        color: {text};
+                        gap: 0px;
                     ">
                         <div style="text-align: right; font-weight: bold;">{day}</div>
                         <div style="text-align: left;">{task_buttons_html}</div>
                     </div>
                 """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                    <div style='border: 1px solid transparent; padding: 6px; min-height: 120px;'></div>
-                """, unsafe_allow_html=True)
 
+            else:
+                st.html("""
+                    <div style='border: 1px solid transparent; padding: 6px; min-height: 120px;'></div>
+                """)

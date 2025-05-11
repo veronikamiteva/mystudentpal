@@ -12,8 +12,38 @@ login_manager.login_register()
 import streamlit as st
 import pandas as pd
 import numpy as np
+import base64
 from datetime import datetime
+from streamlit_theme import st_theme
 from utils import helpers  # you can remove if no longer needed
+
+# Load your image and encode it as base64
+with open("../assets/logo-msp.png", "rb") as image_file:
+    encoded = base64.b64encode(image_file.read()).decode()
+
+# Create the HTML for the image
+logo_html = f"""
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{encoded}" width="150">
+    </div>
+"""
+
+# Display the logo in the sidebar
+st.sidebar.markdown(logo_html, unsafe_allow_html=True)
+
+theme = st_theme() # or your st_theme() function
+
+# Provide a fallback if theme is None
+if theme and theme['base'] == "dark":
+    bg = "#1e1e1e"
+    text = "white"
+elif theme and theme['base'] == "light":
+    bg = "#f5f5f5"
+    text = "black"
+else:
+    # Fallback if theme is not yet available
+    bg = "#e0e0e0"  # Light gray
+    text = "#202020"  # Very dark gray
 
 data_manager.load_user_data(
     session_state_key='modulen_df',
@@ -43,9 +73,18 @@ def course_dialog():
 
 # Main interface
 st.title("📚 Modulmanager")
+st.divider()
 
-if st.button("Modul hinzufügen"):
-    course_dialog()
+
+# Form inside box
+with st.form("add"):
+    # Layout inside the box
+    col1, col2 = st.columns([4, 1])
+    with col1:
+        st.markdown(f'<p style="color: {text}; font-size: 16px; margin-top: 8px;">Neue Modul hinzufügen</p>', unsafe_allow_html=True)
+    with col2:
+        if st.form_submit_button("➕ Neue Modul"):
+            course_dialog()
 
 # Display existing courses
 if not st.session_state["modulen_df"].empty:

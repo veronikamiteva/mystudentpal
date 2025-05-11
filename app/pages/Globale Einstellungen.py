@@ -10,8 +10,38 @@ login_manager.login_register()
 
 import streamlit as st
 import pandas as pd
+import base64
 from datetime import datetime
 from utils import helpers  # optional
+from streamlit_theme import st_theme
+
+# Load your image and encode it as base64
+with open("../assets/logo-msp.png", "rb") as image_file:
+    encoded = base64.b64encode(image_file.read()).decode()
+
+# Create the HTML for the image
+logo_html = f"""
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{encoded}" width="150">
+    </div>
+"""
+
+# Display the logo in the sidebar
+st.sidebar.markdown(logo_html, unsafe_allow_html=True)
+
+theme = st_theme() # or your st_theme() function
+
+# Provide a fallback if theme is None
+if theme and theme['base'] == "dark":
+    bg = "#1e1e1e"
+    text = "white"
+elif theme and theme['base'] == "light":
+    bg = "#f5f5f5"
+    text = "black"
+else:
+    # Fallback if theme is not yet available
+    bg = "#e0e0e0"  # Light gray
+    text = "#202020"  # Very dark gray
 
 # --- Load or initialize settings DataFrame ---
 data_manager.load_user_data(
@@ -31,7 +61,15 @@ def get_setting(name, default_value):
 
 # --- Main interface ---
 st.title("🌍 Manager für globale Einstellungen")
-st.markdown('Konfiguriere deine Bewertungsparameter!')
+st.divider()
+
+st.html(f"""
+    <div style="background-color: {bg}; padding: 15px; border-radius: 12px;">
+        <p style="color: {text}; padding-top: 15px;">
+            Konfiguriere deine Bewertungsparameter!
+        </p>
+    </div>
+""")
 
 with st.form('settings_form'):
     st.subheader('Bewertungseinstellungen')

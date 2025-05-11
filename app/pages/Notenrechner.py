@@ -11,8 +11,38 @@ login_manager.login_register()
 import streamlit as st
 import pandas as pd
 import numpy as np
+import base64
 from datetime import datetime
 from utils import helpers  # optional
+from streamlit_theme import st_theme
+
+# Load your image and encode it as base64
+with open("../assets/logo-msp.png", "rb") as image_file:
+    encoded = base64.b64encode(image_file.read()).decode()
+
+# Create the HTML for the image
+logo_html = f"""
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{encoded}" width="150">
+    </div>
+"""
+
+# Display the logo in the sidebar
+st.sidebar.markdown(logo_html, unsafe_allow_html=True)
+
+theme = st_theme() # or your st_theme() function
+
+# Provide a fallback if theme is None
+if theme and theme['base'] == "dark":
+    bg = "#1e1e1e"
+    text = "white"
+elif theme and theme['base'] == "light":
+    bg = "#f5f5f5"
+    text = "black"
+else:
+    # Fallback if theme is not yet available
+    bg = "#e0e0e0"  # Light gray
+    text = "#202020"  # Very dark gray
 
 # --- Load or initialize persistent data ---
 courses_schema = ["Modul", "ECTS", "Semester"]
@@ -84,12 +114,24 @@ def assessment_dialog():
 
 # --- Main interface ---
 st.title("🧮 Notenrechner")
+st.divider()
 
-if st.button('Bewertung hinzufügen'):
-    assessment_dialog()
+with st.form("add"):
+    # Layout inside the box
+    col1, col2 = st.columns([6, 2])
+    with col1:
+        st.markdown(f'<p style="color: {text}; font-size: 16px; margin-top: 8px;">Neue Bewertung hinzufügen</p>', unsafe_allow_html=True)
+    with col2:
+        if st.form_submit_button("➕ Neue Bewertung"):
+            assessment_dialog()
 
 # --- Overview & GPA Calculation ---
-st.subheader('Übersicht & Durchschnitt')
+st.html(f"""
+    <div style="background-color: {bg}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3 style="color: {text};">Übersicht & Durchschnitt</h3>
+    </div>
+""")
+
 if assess_df.empty:
     st.info('Noch keine Bewertungen erfasst.')
 else:
@@ -117,9 +159,3 @@ else:
     finals_df = pd.DataFrame(finals)
     st.write('### Endnoten pro Modul')
     st.dataframe(finals_df)
-
-    # --- Overall GPA Calculation ---
-    total_credits = finals_df['ECTS'].sum()
-    weighted_sum = (finals_df['Endnote'] * finals_df['ECTS']).sum()
-    overall_gpa = weighted_sum / total_credits if total_credits else 0
-    st.metric('Durchscnitt Note', f'{round(overall_gpa, 2)}')
