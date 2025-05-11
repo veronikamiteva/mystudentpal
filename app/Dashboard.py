@@ -32,7 +32,8 @@ data_manager.load_user_data(
 # Load your image and encode it as base64
 
 # Build absolute path reliably
-logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png"
+root_dir = Path(__file__).resolve().parents[2]
+logo_path = root_dir / "assets" / "logo-msp.png"
 
 with open(logo_path, "rb") as image_file:
     encoded = base64.b64encode(image_file.read()).decode()
