@@ -14,4 +14,4 @@ Pomellitto Melanie - pomelmel@students.zhaw.ch
 
 *Diese App wurde im Rahmen der Moduls 'BMLD Informatik 2' an der ZHAW entwickelt.*
 
-MyStudentPal App URL - https://mystudentpal.streamlit.app/
+MyStudentPal App URL - https://app-mystudentpal.streamlit.app/
