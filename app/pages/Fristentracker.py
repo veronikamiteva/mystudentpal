@@ -4,6 +4,7 @@ import calendar
 import base64
 from streamlit_theme import st_theme
 from datetime import datetime, date, timedelta
+from pathlib import Path
 
 
 
@@ -57,8 +58,10 @@ login_manager = LoginManager(data_manager)
 login_manager.login_register()
 # ====== End Login Block ======
 
-# Load your image and encode it as base64
-with open("../assets/logo-msp.png", "rb") as image_file:
+# Build absolute path reliably
+logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png"
+
+with open(logo_path, "rb") as image_file:
     encoded = base64.b64encode(image_file.read()).decode()
 
 # Create the HTML for the image

@@ -7,6 +7,7 @@ from utils.data_manager import DataManager
 from utils.login_manager import LoginManager
 import base64
 from streamlit_theme import st_theme
+from pathlib import Path
 
 # ====== Init Block ======
 
@@ -29,7 +30,11 @@ data_manager.load_user_data(
 # === Sidebar Navigation ===
 
 # Load your image and encode it as base64
-with open("../assets/logo-msp.png", "rb") as image_file:
+
+# Build absolute path reliably
+logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png"
+
+with open(logo_path, "rb") as image_file:
     encoded = base64.b64encode(image_file.read()).decode()
 
 # Create the HTML for the image

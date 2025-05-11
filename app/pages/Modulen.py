@@ -16,9 +16,12 @@ import base64
 from datetime import datetime
 from streamlit_theme import st_theme
 from utils import helpers  # you can remove if no longer needed
+from pathlib import Path
 
-# Load your image and encode it as base64
-with open("../assets/logo-msp.png", "rb") as image_file:
+# Build absolute path reliably
+logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png"
+
+with open(logo_path, "rb") as image_file:
     encoded = base64.b64encode(image_file.read()).decode()
 
 # Create the HTML for the image
