@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import calendar
 import base64
+import time
 from streamlit_theme import st_theme
 from datetime import datetime, date, timedelta
 from pathlib import Path
@@ -89,8 +90,12 @@ aufgaben_df = st.session_state["aufgaben_df"]
 if not aufgaben_df.empty:
     aufgaben_df['Fälligkeitsdatum'] = pd.to_datetime(aufgaben_df['Fälligkeitsdatum']).dt.date
 
-theme = st_theme() # or your st_theme() function
+@st.dialog("Loading...")
+def spinner():
+    with st.spinner():
+        time.sleep(7)
 
+theme = st_theme()
 # Provide a fallback if theme is None
 if theme and theme['base'] == "dark":
     bg = "#1e1e1e"
@@ -99,9 +104,7 @@ elif theme and theme['base'] == "light":
     bg = "#f5f5f5"
     text = "black"
 else:
-    # Fallback if theme is not yet available
-    bg = "#e0e0e0"  # Light gray
-    text = "#202020"  # Very dark gray
+    spinner()
 
 # --- Add Assignment Dialog ---
 @st.dialog("➕ Neue Aufgabe hinzufügen")

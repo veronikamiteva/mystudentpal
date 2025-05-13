@@ -13,6 +13,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import base64
+import time
 from datetime import datetime
 from streamlit_theme import st_theme
 from utils import helpers  # you can remove if no longer needed
@@ -34,8 +35,12 @@ logo_html = f"""
 # Display the logo in the sidebar
 st.sidebar.markdown(logo_html, unsafe_allow_html=True)
 
-theme = st_theme() # or your st_theme() function
+@st.dialog("Loading...")
+def spinner():
+    with st.spinner():
+        time.sleep(7)
 
+theme = st_theme()
 # Provide a fallback if theme is None
 if theme and theme['base'] == "dark":
     bg = "#1e1e1e"
@@ -44,9 +49,7 @@ elif theme and theme['base'] == "light":
     bg = "#f5f5f5"
     text = "black"
 else:
-    # Fallback if theme is not yet available
-    bg = "#e0e0e0"  # Light gray
-    text = "#202020"  # Very dark gray
+    spinner()
 
 data_manager.load_user_data(
     session_state_key='modulen_df',

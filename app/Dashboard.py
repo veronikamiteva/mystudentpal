@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 from utils.data_manager import DataManager
 from utils.login_manager import LoginManager
 import base64
@@ -74,6 +75,11 @@ student_email_veroninka = "mitevver@students.zhaw.ch"
 student_email_phiphi = "cungphi1@students.zhaw.ch"
 student_email_melanie = "pomelmel@students.zhaw.ch"
 
+@st.dialog("Loading...")
+def spinner():
+    with st.spinner():
+        time.sleep(7)
+
 theme = st_theme()
 # Provide a fallback if theme is None
 if theme and theme['base'] == "dark":
@@ -83,9 +89,7 @@ elif theme and theme['base'] == "light":
     bg = "#f5f5f5"
     text = "black"
 else:
-    # Fallback if theme is not yet available
-    bg = "#e0e0e0"  # Light gray
-    text = "#202020"  # Very dark gray
+    spinner()
 
 # === Top Title ===
 st.markdown("### 📊 Dashboard")
