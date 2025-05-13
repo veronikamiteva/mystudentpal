@@ -128,7 +128,7 @@ with st.container():
   
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div style="background-color: {bg}; padding: 20px; border-radius: 12px; text-align: center;">
-                <div style="font-size: 1.2em;">📐 Durchscnitt Note</div>
+                <div style="font-size: 1.2em;">📐 Durchschnitt Note</div>
                 <div style="font-size: 2.5em; font-weight: bold; margin-top: 10px;">{avg_grade}</div>
             </div>
             <div style="background-color: {bg}; padding: 20px; border-radius: 12px; text-align: center;">
