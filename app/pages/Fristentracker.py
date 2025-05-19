@@ -78,17 +78,7 @@ if not aufgaben_df.empty:
 if "Priorität" not in aufgaben_df.columns:
     aufgaben_df["Priorität"] = "Niedrig"  # Default value
 
-@st.dialog("Loading...")
-def spinner():
-    with st.spinner():
-        time.sleep(7) 
-
 bg, text = set_background_theme(2)
-
-# Show dialog if needed
-if st.session_state.get("show_spinner_dialog", False):
-    spinner()
-    st.session_state["show_spinner_dialog"] = False
 
 render_sidebar_logo(2)
 
@@ -163,9 +153,10 @@ for week in month_calendar:
                 day_tasks = aufgaben_df[aufgaben_df['Fälligkeitsdatum'] == day_date]
 
                 task_buttons_html = ""
+
                 for i, task in day_tasks.iterrows():
                     tooltip_text = task['Beschreibung'] or "Keine Beschreibung"
-                    prio = task.get("Priorität", "Niedrig")
+                    prio = task.get("Priorität", "Niedrig")  # <- prio must be inside the loop
 
                     # Farbwahl basierend auf Priorität
                     if prio == "Niedrig":
@@ -176,8 +167,7 @@ for week in month_calendar:
                         color = "#f8d7da"  # rötlich
                     else:
                         color = bg  # fallback
-                for i, task in day_tasks.iterrows():
-                    tooltip_text = task['Beschreibung'] or "Keine Beschreibung"
+
                     # Create unique delete ID
                     task_id = f"{task['Titel']}_{task['Fälligkeitsdatum']}_{i}".replace(" ", "_")
 
@@ -191,6 +181,7 @@ for week in month_calendar:
                             </span>
                         </div>
                     """
+
 
                 st.html(f"""
                     <div style="
