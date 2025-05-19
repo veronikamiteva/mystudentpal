@@ -18,38 +18,10 @@ from datetime import datetime
 from streamlit_theme import st_theme
 from utils import helpers  # you can remove if no longer needed
 from pathlib import Path
+from functions.backgound import set_background_theme, render_sidebar_logo
 
-# Build absolute path reliably
-logo_path = Path(__file__).resolve().parents[2] / "assets" / "logo-msp.png"
-
-with open(logo_path, "rb") as image_file:
-    encoded = base64.b64encode(image_file.read()).decode()
-
-# Create the HTML for the image
-logo_html = f"""
-    <div style="text-align: center;">
-        <img src="data:image/png;base64,{encoded}" width="150">
-    </div>
-"""
-
-# Display the logo in the sidebar
-st.sidebar.markdown(logo_html, unsafe_allow_html=True)
-
-@st.dialog("Loading...")
-def spinner():
-    with st.spinner():
-        time.sleep(7)
-
-theme = st_theme()
-# Provide a fallback if theme is None
-if theme and theme['base'] == "dark":
-    bg = "#1e1e1e"
-    text = "white"
-elif theme and theme['base'] == "light":
-    bg = "#f5f5f5"
-    text = "black"
-else:
-    spinner()
+bg, text = set_background_theme(pathDepth=2)
+render_sidebar_logo(pathDepth=2)
 
 data_manager.load_user_data(
     session_state_key='modulen_df',
@@ -92,8 +64,37 @@ with st.form("add"):
         if st.form_submit_button("➕ Neue Modul"):
             course_dialog()
 
-# Display existing courses
-if not st.session_state["modulen_df"].empty:
-    st.dataframe(st.session_state["modulen_df"])
+modulen_df = st.session_state["modulen_df"]
+
+if not modulen_df.empty:
+    st.subheader("Existing Modules")
+
+    # Allow deletion only via UI (no add/edit, no custom buttons)
+    edited_df = st.data_editor(
+        modulen_df,             # disables editing of cells
+        hide_index=True,
+        use_container_width=True,
+        num_rows="dynamic" ,
+        disabled={
+            "Modul": True,     # read-only
+            "ECTS": True,      # read-only
+            "Semester": True   # read-only
+        }
+    )
+
+    # Detect if rows were deleted via trash icon
+    if len(edited_df) < len(modulen_df):
+        deleted_modules = set(modulen_df["Modul"]) - set(edited_df["Modul"])
+        st.session_state["modulen_df"] = edited_df.reset_index(drop=True)
+        data_manager.update_user_data("modulen_df")
+
+        # Also delete from bewertungen_df
+        if "bewertungen_df" in st.session_state:
+            bewertungen_df = st.session_state["bewertungen_df"]
+            bewertungen_df = bewertungen_df[~bewertungen_df["Modul"].isin(deleted_modules)]
+            st.session_state["bewertungen_df"] = bewertungen_df
+            data_manager.update_user_data("bewertungen_df")
+       
+        st.rerun()
 else:
     st.info("Noch keine Module hinzugefügt.")

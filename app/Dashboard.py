@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,10 +29,9 @@ data_manager.load_user_data(
 
 # === Sidebar Navigation ===
 
-# Load your image and encode it as base64
 
 # Build absolute path reliably
-logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png"
+logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png" # Load your image and encode it as base64
 
 with open(logo_path, "rb") as image_file:
     encoded = base64.b64encode(image_file.read()).decode()
@@ -85,9 +83,11 @@ theme = st_theme()
 if theme and theme['base'] == "dark":
     bg = "#1e1e1e"
     text = "white"
+    wallpaper = "msp-bg.png"
 elif theme and theme['base'] == "light":
     bg = "#f5f5f5"
     text = "black"
+    wallpaper = "msp-bg-light.png"
 else:
     spinner()
 
@@ -97,9 +97,28 @@ st.markdown("### 📊 Dashboard")
 st.divider()
 
 # === Dashboard Layout ===
-import matplotlib.pyplot as plt
-
 # --- Quick Stats in Cards ---
+
+#logo_path = Path(__file__).resolve().parent.parent / "assets" / "my-student-pal-dashboard.png"
+wallpaper_path = Path(__file__).resolve().parent.parent / "assets" / wallpaper
+with open(wallpaper_path, "rb") as image_file:
+    encoded1 = base64.b64encode(image_file.read()).decode()
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded1}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position-x: 310px !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # GPA calculation
@@ -116,8 +135,6 @@ if not bewertungen_df.empty and not modulen_df.empty:
     total_credits = finals_df["ECTS"].sum()
     weighted_sum = (finals_df["Endnote"] * finals_df["ECTS"]).sum()
     avg_grade = f"{(weighted_sum / total_credits):.2f}" if total_credits else "—"
-
-
 
 
 # --- Quick Stats in Cards ---
@@ -145,13 +162,6 @@ with st.container():
             </div>
         </div>
     """)
-
-
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-import numpy as np
-import streamlit as st
-import pandas as pd
 
 st.markdown("#### 🏆 Top 5 Module nach Durchschnittsnote")
 

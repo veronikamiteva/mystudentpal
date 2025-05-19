@@ -1,3 +1,13 @@
+# ====== Start Login Block ======
+from utils.data_manager import DataManager
+from utils.login_manager import LoginManager
+
+# Initialize managers
+data_manager = DataManager(fs_protocol="webdav", fs_root_folder="MyStudentPal_DB")
+login_manager = LoginManager(data_manager)
+login_manager.login_register()
+# ====== End Login Block ======
+
 import streamlit as st
 import pandas as pd
 import calendar
@@ -6,8 +16,7 @@ import time
 from streamlit_theme import st_theme
 from datetime import datetime, date, timedelta
 from pathlib import Path
-
-
+from functions.backgound import set_background_theme, render_sidebar_logo
 
 # --- Style only calendar area (not selectboxes/titles) ---
 st.html("""
@@ -49,34 +58,10 @@ st.html("""
     }
     </style>
 """)
-# ====== Start Login Block ======
-from utils.data_manager import DataManager
-from utils.login_manager import LoginManager
 
-# Initialize managers
-data_manager = DataManager(fs_protocol="webdav", fs_root_folder="MyStudentPal_DB")
-login_manager = LoginManager(data_manager)
-login_manager.login_register()
-# ====== End Login Block ======
-
-# Build absolute path reliably
-logo_path = Path(__file__).resolve().parents[2] / "assets" / "logo-msp.png"
-
-with open(logo_path, "rb") as image_file:
-    encoded = base64.b64encode(image_file.read()).decode()
-
-# Create the HTML for the image
-logo_html = f"""
-    <div style="text-align: center;">
-        <img src="data:image/png;base64,{encoded}" width="150">
-    </div>
-"""
-
-# Display the logo in the sidebar
-st.sidebar.markdown(logo_html, unsafe_allow_html=True)
 
 # --- Load or initialize Tasks ---
-tasks_schema = ["Titel", "Fälligkeitsdatum", "Beschreibung"]
+tasks_schema = ["Titel", "Fälligkeitsdatum", "Beschreibung", "Priorität"]
 
 data_manager.load_user_data(
     session_state_key='aufgaben_df',
@@ -90,21 +75,22 @@ aufgaben_df = st.session_state["aufgaben_df"]
 if not aufgaben_df.empty:
     aufgaben_df['Fälligkeitsdatum'] = pd.to_datetime(aufgaben_df['Fälligkeitsdatum']).dt.date
 
+if "Priorität" not in aufgaben_df.columns:
+    aufgaben_df["Priorität"] = "Niedrig"  # Default value
+
 @st.dialog("Loading...")
 def spinner():
     with st.spinner():
-        time.sleep(7)
+        time.sleep(7) 
 
-theme = st_theme()
-# Provide a fallback if theme is None
-if theme and theme['base'] == "dark":
-    bg = "#1e1e1e"
-    text = "white"
-elif theme and theme['base'] == "light":
-    bg = "#f5f5f5"
-    text = "black"
-else:
+bg, text = set_background_theme(2)
+
+# Show dialog if needed
+if st.session_state.get("show_spinner_dialog", False):
     spinner()
+    st.session_state["show_spinner_dialog"] = False
+
+render_sidebar_logo(2)
 
 # --- Add Assignment Dialog ---
 @st.dialog("➕ Neue Aufgabe hinzufügen")
@@ -114,6 +100,7 @@ def add_task_dialog():
         title = st.text_input("Aufgabentitel")
         due_date = st.date_input("Fälligkeitsdatum", min_value=date.today())
         description = st.text_area("Beschreibung (optional)")
+        priority = st.selectbox("Priorität auswählen", ["Niedrig", "Mittel", "Hoch"])
         save_task = st.form_submit_button("Aufgabe speichern")
         if save_task:
             if title:
@@ -122,7 +109,8 @@ def add_task_dialog():
                     record_dict={
                         "Titel": title,
                         "Fälligkeitsdatum": due_date,
-                        "Beschreibung": description
+                        "Beschreibung": description,
+                        "Priorität": priority
                     }
                 )
                 st.success(f"Aufgabe '{title}' hinzugefügt!")
@@ -177,17 +165,34 @@ for week in month_calendar:
                 task_buttons_html = ""
                 for i, task in day_tasks.iterrows():
                     tooltip_text = task['Beschreibung'] or "Keine Beschreibung"
+                    prio = task.get("Priorität", "Niedrig")
+
+                    # Farbwahl basierend auf Priorität
+                    if prio == "Niedrig":
+                        color = "#d4edda"  # grünlich
+                    elif prio == "Mittel":
+                        color = "#fff3cd"  # gelblich
+                    elif prio == "Hoch":
+                        color = "#f8d7da"  # rötlich
+                    else:
+                        color = bg  # fallback
+                for i, task in day_tasks.iterrows():
+                    tooltip_text = task['Beschreibung'] or "Keine Beschreibung"
+                    # Create unique delete ID
+                    task_id = f"{task['Titel']}_{task['Fälligkeitsdatum']}_{i}".replace(" ", "_")
+
                     task_buttons_html += f"""
-                        <div class='tooltip' style='font-size: 0.75em; margin-top: 4px;'>
+                        <div class='tooltip' style='font-size: 0.75em; padding: 4px; margin-top: 4px; color: black; background: {color}; border-radius: 9px; position: relative;'>
                             📝 {task['Titel']}
                             <span class='tooltiptext'>
                                 <strong>Fälligkeit:</strong> {task['Fälligkeitsdatum'].strftime('%d.%m.%Y')}<br>
+                                <strong>Priorität:</strong> {prio}<br>
                                 <strong>Beschreibung:</strong> {tooltip_text}
                             </span>
                         </div>
                     """
 
-                st.markdown(f"""
+                st.html(f"""
                     <div style="
                         border: 1px solid #aaaaaa;
                         border-radius: 0px;
@@ -204,7 +209,7 @@ for week in month_calendar:
                         <div style="text-align: right; font-weight: bold;">{day}</div>
                         <div style="text-align: left;">{task_buttons_html}</div>
                     </div>
-                """, unsafe_allow_html=True)
+                """)
 
             else:
                 st.html("""

@@ -14,41 +14,12 @@ import numpy as np
 import base64
 import time
 from datetime import datetime
-from utils import helpers  # optional
 from streamlit_theme import st_theme
 from pathlib import Path
+from functions.backgound import set_background_theme, render_sidebar_logo
 
-# Build absolute path reliably
-logo_path = Path(__file__).resolve().parents[2] / "assets" / "logo-msp.png"
-
-with open(logo_path, "rb") as image_file:
-    encoded = base64.b64encode(image_file.read()).decode()
-
-# Create the HTML for the image
-logo_html = f"""
-    <div style="text-align: center;">
-        <img src="data:image/png;base64,{encoded}" width="150">
-    </div>
-"""
-
-# Display the logo in the sidebar
-st.sidebar.markdown(logo_html, unsafe_allow_html=True)
-
-@st.dialog("Loading...")
-def spinner():
-    with st.spinner():
-        time.sleep(7)
-
-theme = st_theme()
-# Provide a fallback if theme is None
-if theme and theme['base'] == "dark":
-    bg = "#1e1e1e"
-    text = "white"
-elif theme and theme['base'] == "light":
-    bg = "#f5f5f5"
-    text = "black"
-else:
-    spinner()
+bg, text = set_background_theme(2)
+render_sidebar_logo(2)
 
 # --- Load or initialize persistent data ---
 courses_schema = ["Modul", "ECTS", "Semester"]
@@ -141,8 +112,30 @@ st.html(f"""
 if assess_df.empty:
     st.info('Noch keine Bewertungen erfasst.')
 else:
-    st.write('### Bewertungen')
-    st.dataframe(assess_df)
+    # Allow deletion only via UI (no add/edit, no custom buttons)
+    edited_df = st.data_editor(
+        assess_df,             # disables editing of cells
+        hide_index=True,
+        use_container_width=True,
+        num_rows="dynamic" ,
+        disabled={
+            "Modul": True,     # read-only
+            'Bewertung' : True,
+            'Gewichtung' : True, 
+            'Note': True,
+            'Zeitstempel' : True
+        }
+    )
+
+    # Detect if rows were deleted via trash icon
+    if len(edited_df) < len(assess_df):
+        # Identify deleted rows by comparing entire rows
+        deleted_rows = pd.concat([assess_df, edited_df]).drop_duplicates(keep=False)
+
+        st.session_state["bewertungen_df"] = edited_df.reset_index(drop=True)
+        data_manager.update_user_data("bewertungen_df")
+  
+        st.rerun()
 
     # --- Calculation of final grades per course ---
     finals = []

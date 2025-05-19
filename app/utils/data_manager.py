@@ -244,3 +244,19 @@ class DataManager:
         
         st.session_state[session_state_key] = data_value
         self.save_data(session_state_key)
+
+    def update_user_data(self, session_state_key):
+        username = st.session_state.get("username", None)
+        if username is None:
+            raise ValueError("DataManager: Cannot save user data — no user is logged in.")
+
+        if session_state_key not in st.session_state:
+            raise ValueError(f"DataManager: '{session_state_key}' not found in session state.")
+
+        if session_state_key not in self.user_data_reg:
+            raise ValueError(f"DataManager: '{session_state_key}' is not registered as user data.")
+
+        user_data_path = self.user_data_reg[session_state_key]
+
+        dh = self._get_data_handler()
+        dh.save(user_data_path, st.session_state[session_state_key])
