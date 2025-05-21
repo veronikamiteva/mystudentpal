@@ -12,7 +12,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from functions.backgound import set_background_theme, render_sidebar_logo
+from functions.backgound import set_background_theme, render_sidebar_logo, encoder
 import random
 
 # ====== Init Block ======
@@ -76,13 +76,15 @@ st.divider()
 
 # === Dashboard Layout ===
 
+encoded = encoder("my-student-pal-dashboard.png", 2)
+
 # Quote block
 random_quote = random.choice(quotes)
 st.html(f"""
-    <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+    <div style="background-image: url('data:image/png;base64,{encoded}'); background-size: contain; background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
         <h3 style="color: gray">Motivierendes Zitat </h3>
         <hr>
-        <h4 style="color: {text}; font-style: italic; ">{random_quote}</h4>
+        <h4 style="color: {text}; font-style: italic;">{random_quote}</h4>
     </div>
 """)
 
