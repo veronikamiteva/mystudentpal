@@ -78,10 +78,14 @@ st.divider()
 
 encoded = encoder("my-student-pal-dashboard.png", 2)
 
+blend_mode = "normal"
+if bg == "#f0f2f6":
+    blend_mode = "exclusion"
+
 # Quote block
 random_quote = random.choice(quotes)
 st.html(f"""
-    <div style="background-image: url('data:image/png;base64,{encoded}'); background-size: contain; background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+    <div style="background-image: url('data:image/png;base64,{encoded}'); background-blend-mode: {blend_mode}; background-size: contain; background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
         <h3 style="color: gray">Motivierendes Zitat </h3>
         <hr>
         <h4 style="color: {text}; font-style: italic;">{random_quote}</h4>
