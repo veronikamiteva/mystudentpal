@@ -60,7 +60,7 @@ with st.form("add"):
 modulen_df = st.session_state["modulen_df"]
 
 if not modulen_df.empty:
-    st.subheader("Existing Modules")
+    st.subheader("Vorhandene Module")
 
     # Allow deletion only via UI (no add/edit, no custom buttons)
     edited_df = st.data_editor(
