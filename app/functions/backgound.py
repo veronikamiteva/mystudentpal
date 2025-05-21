@@ -4,9 +4,9 @@ import time
 import streamlit as st
 from streamlit_theme import st_theme
 
-@st.dialog("Loading...")
+@st.dialog("Laden...")
 def spinner():
-    with st.spinner("Loading Data..."):
+    with st.spinner("Daten werden geladen..."):
         time.sleep(3)  # simulate some loading
 
 def encoder(wallpaper, pathDepth):
