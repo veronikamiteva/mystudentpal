@@ -1,22 +1,23 @@
+# ====== Start Login Block ======
+from utils.data_manager import DataManager
+from utils.login_manager import LoginManager
+
+# Initialize managers
+data_manager = DataManager(fs_protocol="webdav", fs_root_folder="MyStudentPal_DB")
+login_manager = LoginManager(data_manager)
+login_manager.login_register()
+# ====== End Login Block ======
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import time
-from utils.data_manager import DataManager
-from utils.login_manager import LoginManager
-import base64
-from streamlit_theme import st_theme
-from pathlib import Path
+from functions.backgound import set_background_theme, render_sidebar_logo
+import random
 
 # ====== Init Block ======
-
-# initialize the data manager
-data_manager = DataManager(fs_protocol="webdav", fs_root_folder="MyStudentPal_DB")  # switch drive 
-
-# initialize the login manager
-login_manager = LoginManager(data_manager)
-login_manager.login_register()  # open login/register page
+bg, text, border = set_background_theme(2)
+render_sidebar_logo(2)
 
 # load the data from the persistent storage into the session state
 data_manager.load_user_data(
@@ -25,26 +26,6 @@ data_manager.load_user_data(
     initial_value = pd.DataFrame(), 
     # parse_dates = ['timestamp']
     )
-# ====== End Init Block ======
-
-# === Sidebar Navigation ===
-
-
-# Build absolute path reliably
-logo_path = Path(__file__).resolve().parent.parent / "assets" / "logo-msp.png" # Load your image and encode it as base64
-
-with open(logo_path, "rb") as image_file:
-    encoded = base64.b64encode(image_file.read()).decode()
-
-# Create the HTML for the image
-logo_html = f"""
-    <div style="text-align: center;">
-        <img src="data:image/png;base64,{encoded}" width="150">
-    </div>
-"""
-
-# Display the logo in the sidebar
-st.sidebar.markdown(logo_html, unsafe_allow_html=True)
 
 # Load data
 data_manager.load_user_data(
@@ -73,23 +54,20 @@ student_email_veroninka = "mitevver@students.zhaw.ch"
 student_email_phiphi = "cungphi1@students.zhaw.ch"
 student_email_melanie = "pomelmel@students.zhaw.ch"
 
-@st.dialog("Loading...")
-def spinner():
-    with st.spinner():
-        time.sleep(7)
 
-theme = st_theme()
-# Provide a fallback if theme is None
-if theme and theme['base'] == "dark":
-    bg = "#1e1e1e"
-    text = "white"
-    wallpaper = "msp-bg.png"
-elif theme and theme['base'] == "light":
-    bg = "#f5f5f5"
-    text = "black"
-    wallpaper = "msp-bg-light.png"
-else:
-    spinner()
+quotes = [
+    "💡 'Innovation distinguishes between a leader and a follower.' – Steve Jobs",
+    "🌱 'Learning never exhausts the mind.' – Leonardo da Vinci",
+    "🎯 'The secret of getting ahead is getting started.' – Mark Twain",
+    "📚 'Education is the most powerful weapon which you can use to change the world.' – Nelson Mandela",
+    "🧠 'The beautiful thing about learning is that no one can take it away from you.' – B.B. King",
+    "🔥 'Don’t watch the clock; do what it does. Keep going.' – Sam Levenson",
+    "🌟 'Believe you can and you’re halfway there.' – Theodore Roosevelt",
+    "🛠️ 'Opportunities don't happen. You create them.' – Chris Grosser",
+    "🏔️ 'It always seems impossible until it's done.' – Nelson Mandela"
+]
+
+# ====== End Init Block ======
 
 # === Top Title ===
 st.markdown("### 📊 Dashboard")
@@ -97,29 +75,16 @@ st.markdown("### 📊 Dashboard")
 st.divider()
 
 # === Dashboard Layout ===
-# --- Quick Stats in Cards ---
 
-#logo_path = Path(__file__).resolve().parent.parent / "assets" / "my-student-pal-dashboard.png"
-wallpaper_path = Path(__file__).resolve().parent.parent / "assets" / wallpaper
-with open(wallpaper_path, "rb") as image_file:
-    encoded1 = base64.b64encode(image_file.read()).decode()
-
-st.markdown(
-    f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/png;base64,{encoded1}");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-position-x: 310px !important;
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
+# Quote block
+random_quote = random.choice(quotes)
+st.html(f"""
+    <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+        <h3 style="color: gray">Motivierendes Zitat </h3>
+        <hr>
+        <h4 style="color: {text}; font-style: italic; ">{random_quote}</h4>
+    </div>
+""")
 
 # GPA calculation
 avg_grade = "—"
@@ -138,25 +103,24 @@ if not bewertungen_df.empty and not modulen_df.empty:
 
 
 # --- Quick Stats in Cards ---
-
 with st.container():
     st.markdown("#### 📌 Kurzübersicht")
     st.html(f"""
   
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div style="background-color: {bg}; padding: 20px; border-radius: 12px; text-align: center;">
-                <div style="font-size: 1.2em;">📐 Durchschnitt Note</div>
+            <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.2em;">📐 Durchschnittsnote</div>
                 <div style="font-size: 2.5em; font-weight: bold; margin-top: 10px;">{avg_grade}</div>
             </div>
-            <div style="background-color: {bg}; padding: 20px; border-radius: 12px; text-align: center;">
+            <div style="background-color: {bg}; border: 1px solid {border};  padding: 20px; border-radius: 12px; text-align: center;">
                 <div style="font-size: 1.2em;">📝 Aufgaben</div>
                 <div style="font-size: 2.5em; font-weight: bold; margin-top: 10px;">{len(aufgaben_df)}</div>
             </div>
-            <div style="background-color: {bg}; padding: 20px; border-radius: 12px; text-align: center;">
+            <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; text-align: center;">
                 <div style="font-size: 1.2em;">📚 Modulen</div>
                 <div style="font-size: 2.5em; font-weight: bold; margin-top: 10px;">{len(modulen_df)}</div>
             </div>
-                        <div style="background-color: {bg}; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="background-color: {bg}; border: 1px solid {border};  padding: 20px; border-radius: 12px; text-align: center;">
                 <div style="font-size: 1.2em;">✅ Leistungsnachweise</div>
                 <div style="font-size: 2.5em; font-weight: bold; margin-top: 10px;">{len(bewertungen_df)}</div>
             </div>
@@ -194,7 +158,7 @@ else:
 
 # Section 1: About the App
 st.html(f"""
-    <div style="background-color: {bg}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+    <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
         <h3 style="color: {text};">ℹ️ Über MyStudentPal</h3>
         <p style="color: {text};">
             <strong>MyStudentPal</strong> ist ein digitaler Studienassistent, der Studierenden an Hochschulen und Universitäten hilft, ihr akademisches Leben zu organisieren.
@@ -213,7 +177,7 @@ st.html(f"""
 
 # Section 2: Contributors
 st.html(f"""
-    <div style="background-color: {bg}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+    <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
         <h3 style="color: {text};">👥 Entwickelt von</h3>
         <ul style="color: {text}; padding-left: 20px;">
             <li>Veronika Miteva – <a href="mailto:{student_email_veroninka}" style="color: #1f77b4;">{student_email_veroninka}</a></li>
@@ -225,7 +189,7 @@ st.html(f"""
 
 # Section 3: Disclaimer
 st.html(f"""
-    <div style="background-color: {bg}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+    <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
         <h3 style="color: {text};">⚠️ Disclaimer</h3>
         <p style="color: {text};">
             Diese App wurde im Rahmen der Moduls <strong>BMLD Informatik 2</strong> an der ZHAW (Zürcher Hochschule für Angewandte Wissenschaften) entwickelt.

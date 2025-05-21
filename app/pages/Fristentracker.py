@@ -11,12 +11,12 @@ login_manager.login_register()
 import streamlit as st
 import pandas as pd
 import calendar
-import base64
-import time
-from streamlit_theme import st_theme
-from datetime import datetime, date, timedelta
-from pathlib import Path
+from datetime import date
 from functions.backgound import set_background_theme, render_sidebar_logo
+
+bg, text, border = set_background_theme(2)
+
+render_sidebar_logo(2)
 
 # --- Style only calendar area (not selectboxes/titles) ---
 st.html("""
@@ -78,10 +78,6 @@ if not aufgaben_df.empty:
 if "Priorität" not in aufgaben_df.columns:
     aufgaben_df["Priorität"] = "Niedrig"  # Default value
 
-bg, text = set_background_theme(2)
-
-render_sidebar_logo(2)
-
 # --- Add Assignment Dialog ---
 @st.dialog("➕ Neue Aufgabe hinzufügen")
 def add_task_dialog():
@@ -116,7 +112,7 @@ st.divider()
 # Form inside box
 with st.form("add"):
     # Layout inside the box
-    col1, col2 = st.columns([4, 1])
+    col1, col2 = st.columns([10, 3])
     with col1:
         st.markdown(f'<p style="color: {text}; font-size: 16px; margin-top: 8px;">Neue Aufgabe hinzufügen</p>', unsafe_allow_html=True)
     with col2:

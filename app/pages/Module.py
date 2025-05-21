@@ -11,17 +11,10 @@ login_manager.login_register()
 
 import streamlit as st
 import pandas as pd
-import numpy as np
-import base64
-import time
-from datetime import datetime
-from streamlit_theme import st_theme
-from utils import helpers  # you can remove if no longer needed
-from pathlib import Path
 from functions.backgound import set_background_theme, render_sidebar_logo
 
-bg, text = set_background_theme(pathDepth=2)
-render_sidebar_logo(pathDepth=2)
+bg, text, border = set_background_theme(2)
+render_sidebar_logo(2)
 
 data_manager.load_user_data(
     session_state_key='modulen_df',
@@ -57,7 +50,7 @@ st.divider()
 # Form inside box
 with st.form("add"):
     # Layout inside the box
-    col1, col2 = st.columns([4, 1])
+    col1, col2 = st.columns([10, 3])
     with col1:
         st.markdown(f'<p style="color: {text}; font-size: 16px; margin-top: 8px;">Neue Modul hinzufügen</p>', unsafe_allow_html=True)
     with col2:

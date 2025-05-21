@@ -4,25 +4,12 @@ import time
 import streamlit as st
 from streamlit_theme import st_theme
 
-
 @st.dialog("Loading...")
 def spinner():
-    with st.spinner():
-        time.sleep(1) 
+    with st.spinner("Loading Data..."):
+        time.sleep(3)  # simulate some loading
 
-def set_background_theme(pathDepth):
-    theme = st_theme()
-    if theme and theme['base'] == "dark":
-        bg = "#1e1e1e"
-        text = "white"
-        wallpaper = "msp-bg.png"
-    elif theme and theme['base'] == "light":
-        bg = "#f5f5f5"
-        text = "black"
-        wallpaper = "msp-bg-light.png"
-    else:
-        spinner()
-
+def set_wallpaper(wallpaper, pathDepth):
     wallpaper_path = Path(__file__).resolve().parents[pathDepth] / "assets" / wallpaper
     with open(wallpaper_path, "rb") as image_file:
         encoded1 = base64.b64encode(image_file.read()).decode()
@@ -32,20 +19,37 @@ def set_background_theme(pathDepth):
         <style>
         .stApp {{
             background-image: url("data:image/png;base64,{encoded1}");
-            background-size: cover;
-            background-position: center;
+            background-position: right;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            background-position-x: 310px !important;
         }}
         </style>
         """,
         unsafe_allow_html=True
-    )
+    )    
+def set_background_theme(pathDepth):
+    theme = st_theme()
+    if theme and theme['base'] == "dark":
+        bg = "#21283cff"
+       # bg = '#333334'
+        text = "white"
+        border = "#a1a7b6"
+        wallpaper = "msp-bg.png"
+        set_wallpaper(wallpaper, pathDepth)
+        return bg, text, border
 
-    return bg, text
-
-
+    elif theme and theme['base'] == "light":
+        bg = "#f0f2f6"
+        text = "black"
+        border = "#c1c1c1"
+        wallpaper = "msp-bg-light.png"
+        set_wallpaper(wallpaper, pathDepth)
+        return bg, text, border
+    else:
+        spinner()
+    
+    
+    return bg, text, border
 
 def render_sidebar_logo(pathDepth):
     logo_path = Path(__file__).resolve().parents[pathDepth] / "assets" / "logo-msp.png"

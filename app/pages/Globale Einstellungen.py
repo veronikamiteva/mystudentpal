@@ -10,15 +10,9 @@ login_manager.login_register()
 
 import streamlit as st
 import pandas as pd
-import base64
-from datetime import datetime
-import time
-from utils import helpers  # optional
-from streamlit_theme import st_theme
-from pathlib import Path
 from functions.backgound import set_background_theme, render_sidebar_logo
 
-bg, text = set_background_theme(2)
+bg, text, border = set_background_theme(2)
 render_sidebar_logo(2)
 
 # --- Load or initialize settings DataFrame ---
@@ -42,7 +36,7 @@ st.title("🌍 Manager für globale Einstellungen")
 st.divider()
 
 st.html(f"""
-    <div style="background-color: {bg}; padding: 15px; border-radius: 12px;">
+    <div style="background-color: {bg}; border: 1px solid {border}; padding: 15px; border-radius: 12px;">
         <p style="color: {text}; padding-top: 15px;">
             Konfiguriere deine Bewertungsparameter!
         </p>

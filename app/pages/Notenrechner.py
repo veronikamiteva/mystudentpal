@@ -11,14 +11,10 @@ login_manager.login_register()
 import streamlit as st
 import pandas as pd
 import numpy as np
-import base64
-import time
 from datetime import datetime
-from streamlit_theme import st_theme
-from pathlib import Path
 from functions.backgound import set_background_theme, render_sidebar_logo
 
-bg, text = set_background_theme(2)
+bg, text, border = set_background_theme(2)
 render_sidebar_logo(2)
 
 # --- Load or initialize persistent data ---
@@ -104,7 +100,7 @@ with st.form("add"):
 
 # --- Overview & GPA Calculation ---
 st.html(f"""
-    <div style="background-color: {bg}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+    <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
         <h3 style="color: {text};">Übersicht & Durchschnitt</h3>
     </div>
 """)
