@@ -119,7 +119,7 @@ with st.container():
                 <div style="font-size: 2.5em; font-weight: bold; margin-top: 10px;">{len(aufgaben_df)}</div>
             </div>
             <div style="background-color: {bg}; border: 1px solid {border}; padding: 20px; border-radius: 12px; text-align: center;">
-                <div style="font-size: 1.2em;">📚 Modulen</div>
+                <div style="font-size: 1.2em;">📚 Module</div>
                 <div style="font-size: 2.5em; font-weight: bold; margin-top: 10px;">{len(modulen_df)}</div>
             </div>
                         <div style="background-color: {bg}; border: 1px solid {border};  padding: 20px; border-radius: 12px; text-align: center;">
